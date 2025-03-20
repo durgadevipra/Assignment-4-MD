@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assignment 4_Mobile Applicatin Development Quiz</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .question-container { margin-bottom: 20px; }
+        .correct { background-color: lightgreen; }
+        .wrong { background-color: lightcoral; }
+        #scoreDisplay { display: none; }
+        #quizContainer { display: none; }
+    </style>
+</head>
+<body>
+    <h1>Assignment 4</h1>
+    <h2><u>Mobile Applicatin Development Quiz</u></h2>
+    <div id="userForm">
+        <label>Enter your Name:</label> <input type="text" id="userName"><br>
+        <label>Enter your Class:</label> <input type="text" id="userClass"><br>
+        <button id="startQuizBtn">Start Quiz</button>
+    </div>
+    <div id="quizContainer"></div>
+    <button id="submitBtn" style="display:none;">Submit Quiz</button>
+    <button id="viewScoreBtn" style="display:none;">View Score</button>
+    <div id="scoreDisplay"></div>
+
+    <script>
+        const questions = [
+            { question: "What is a Content Provider in Android?", answers: ["Provides data sharing", "Manages UI", "Handles Networking", "None of the above"], correct: 0 },
+            { question: "How do you send an SMS in Android?", answers: ["Using Intent", "Using Content Provider", "Using SMS Manager", "Using WebView"], correct: 2 },
+            { question: "What class is used for sending emails in Android?", answers: ["Intent", "EmailManager", "MailProvider", "Gmail API"], correct: 0 },
+            { question: "Which class is used to display maps in Android?", answers: ["MapView", "WebView", "ImageView", "TextView"], correct: 0 },
+            { question: "Which permission is required to access location data?", answers: ["ACCESS_FINE_LOCATION", "INTERNET", "READ_CONTACTS", "BLUETOOTH"], correct: 0 },
+            { question: "What is the use of LocationManager?", answers: ["To display maps", "To fetch location data", "To manage databases", "To send messages"], correct: 1 },
+            { question: "Which method is used to monitor a location?", answers: ["onLocationChanged()", "getLocation()", "setLocation()", "fetchLocation()"], correct: 0 },
+            { question: "What is the base class for content providers?", answers: ["ContentProvider", "Context", "Activity", "View"], correct: 0 },
+            { question: "How do you send an email in Android?", answers: ["Using Intent", "Using EmailManager", "Using WebView", "Using SMS Manager"], correct: 0 },
+            { question: "What does the Intent.ACTION_SEND do?", answers: ["Sends an email", "Displays a map", "Shows location data", "Sends an SMS"], correct: 0 },
+            { question: "Which class is used to get the last known location?", answers: ["LocationManager", "LocationProvider", "LocationListener", "LocationService"], correct: 0 },
+            { question: "Which component displays Google Maps?", answers: ["MapFragment", "WebView", "ImageView", "ListView"], correct: 0 },
+            { question: "Which permission is required to send SMS?", answers: ["SEND_SMS", "ACCESS_WIFI_STATE", "READ_PHONE_STATE", "WRITE_EXTERNAL_STORAGE"], correct: 0 },
+            { question: "What does the onLocationChanged() method do?", answers: ["Updates location", "Displays maps", "Sends messages", "Displays emails"], correct: 0 },
+            { question: "How to define a content provider?", answers: ["Extend ContentProvider", "Implement Interface", "Use Intent", "Use AsyncTask"], correct: 0 },
+            { question: "What is the primary purpose of ContentResolver?", answers: ["Access data from ContentProviders", "Manage network calls", "Display UI components", "Handle permissions"], correct: 0 },
+            { question: "Which method is used to insert data in a content provider?", answers: ["insert()", "add()", "create()", "store()"], correct: 0 },
+            { question: "How to retrieve data from a content provider?", answers: ["query()", "fetch()", "retrieve()", "get()"], correct: 0 },
+            { question: "Which Android component provides data sharing?", answers: ["Content Provider", "Service", "BroadcastReceiver", "Activity"], correct: 0 },
+            { question: "Which of the following handles map display?", answers: ["MapView", "ImageView", "ListView", "WebView"], correct: 0 }
+        ];
+
+        document.getElementById('startQuizBtn').addEventListener('click', () => {
+            const name = document.getElementById('userName').value;
+            const userClass = document.getElementById('userClass').value;
+
+            if (!name || !userClass) {
+                alert('Please enter your name and class.');
+                return;
+            }
+
+            document.getElementById('userForm').style.display = 'none';
+            document.getElementById('quizContainer').style.display = 'block';
+            document.getElementById('submitBtn').style.display = 'block';
+
+            const quizContainer = document.getElementById('quizContainer');
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question-container');
+                questionDiv.innerHTML = `<p>${index + 1}. ${q.question}</p>
+                    ${q.answers.map((answer, i) => `<label><input type="radio" name="question${index}" value="${i}"> ${answer}</label><br>`).join('')}`;
+                quizContainer.appendChild(questionDiv);
+            });
+        });
+
+        document.getElementById('submitBtn').addEventListener('click', () => {
+            let score = 0;
+            questions.forEach((q, index) => {
+                const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+                if (selectedOption) {
+                    const userAnswer = parseInt(selectedOption.value);
+                    if (userAnswer === q.correct) {
+                        score++;
+                        selectedOption.parentElement.classList.add('correct');
+                    } else {
+                        selectedOption.parentElement.classList.add('wrong');
+                        document.querySelectorAll(`input[name="question${index}"]`)[q.correct].parentElement.classList.add('correct');
+                    }
+                }
+            });
+            document.getElementById('viewScoreBtn').style.display = 'block';
+
+            document.getElementById('viewScoreBtn').addEventListener('click', () => {
+                document.getElementById('scoreDisplay').innerHTML = `<table border='1'><tr><th>Name</th><th>Class</th><th>Score</th></tr><tr><td>${document.getElementById('userName').value}</td><td>${document.getElementById('userClass').value}</td><td>${score} / 20</td></tr></table>`;
+                document.getElementById('scoreDisplay').style.display = 'block';
+            });
+        });
+
+        document.addEventListener('selectstart', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            if (e.ctrlKey && ['c', 'x', 's', 'u'].includes(e.key.toLowerCase())) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
